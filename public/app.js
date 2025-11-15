@@ -46,13 +46,25 @@ async function login() {
     }
 }
 
-// BUG 4: Memory leak - intervals never cleared
+// Fixed: Clear intervals when needed
+let autoRefreshInterval = null;
+
 function startAutoRefresh() {
-    const interval = setInterval(() => {
+    // Clear existing interval if any
+    if (autoRefreshInterval) {
+        clearInterval(autoRefreshInterval);
+    }
+    
+    autoRefreshInterval = setInterval(() => {
         loadProducts();
     }, 5000);
-    intervals.push(interval);
-    // Intervals never cleared!
+}
+
+function stopAutoRefresh() {
+    if (autoRefreshInterval) {
+        clearInterval(autoRefreshInterval);
+        autoRefreshInterval = null;
+    }
 }
 
 // BUG 5: Race condition
