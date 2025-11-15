@@ -24,16 +24,19 @@ app.use(express.static('public'));
 // BUG 1: No connection error handling
 db.connect();
 
-// VULNERABILITY 3: SQL Injection vulnerability
+// Fixed: Use parameterized query to prevent SQL injection
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
   
-  // Direct string concatenation - SQL injection!
-  const query = `SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`;
+  // Use parameterized query to prevent SQL injection
+  const query = 'SELECT * FROM users WHERE username = ? AND password = ?';
   
-  db.query(query, (err, results) => {
+  db.query(query, [username, password], (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: 'Database error' });
+    }
     if (results.length > 0) {
-      // BUG 2: Passwords not hashed
+      // BUG 2: Passwords not hashed (still needs to be fixed)
       const token = jwt.sign({ userId: results[0].id }, SECRET_KEY);
       res.json({ token, message: 'Login successful' });
     } else {
