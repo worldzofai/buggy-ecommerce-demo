@@ -23,12 +23,12 @@ function showLogin() {
     document.getElementById('main-content').innerHTML = html;
 }
 
-// VULNERABILITY 2: XSS vulnerability
+// Fixed: Use textContent to prevent XSS
 async function login() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
     
-    // BUG 3: No error handling for fetch
+    // BUG 3: No error handling for fetch (still needs fixing)
     const response = await fetch('/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -41,8 +41,8 @@ async function login() {
         userToken = data.token;
         saveToken(data.token);
         
-        // VULNERABILITY 3: XSS - directly inserting user input
-        document.getElementById('user-info').innerHTML = `Welcome ${username}!`;
+        // Fixed: Use textContent instead of innerHTML to prevent XSS
+        document.getElementById('user-info').textContent = `Welcome ${username}!`;
     }
 }
 
@@ -313,11 +313,14 @@ function generateProductList() {
     return html;
 }
 
-// VULNERABILITY 9: No input sanitization
+// Fixed: Sanitize search query display
 function searchProducts(query) {
-    // Direct use of user input without validation
-    document.getElementById('search-results').innerHTML = 
-        `<h3>Results for: ${query}</h3>`;
+    // Use textContent to prevent XSS
+    const resultsDiv = document.getElementById('search-results');
+    const heading = document.createElement('h3');
+    heading.textContent = `Results for: ${query}`;
+    resultsDiv.innerHTML = '';
+    resultsDiv.appendChild(heading);
 }
 
 // BUG 25: Incorrect this binding
