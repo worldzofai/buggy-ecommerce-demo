@@ -1,0 +1,261 @@
+/* BUG 1: Missing vendor prefixes for older browsers */
+.container {
+    display: flex;
+    flex-direction: column;
+}
+
+/* PERFORMANCE ISSUE 1: Using expensive selectors */
+* {
+    margin: 0;
+    padding: 0;
+}
+
+* * {
+    box-sizing: border-box;
+}
+
+/* BUG 2: !important overuse */
+body {
+    font-family: Arial, sans-serif !important;
+    background: #f0f0f0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* BUG 3: Fixed dimensions that break responsiveness */
+header {
+    background: #333;
+    color: white;
+    padding: 20px;
+    width: 1200px; /* Breaks on smaller screens */
+}
+
+/* BUG 4: Z-index chaos */
+nav {
+    background: #555;
+    padding: 10px;
+    z-index: 99999;
+}
+
+nav button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    z-index: 999999;
+}
+
+/* PERFORMANCE ISSUE 2: Inefficient animations */
+@keyframes spin {
+    from {
+        transform: rotate(0deg) translateX(0px) scale(1);
+    }
+    to {
+        transform: rotate(360deg) translateX(100px) scale(1.5);
+    }
+}
+
+/* BUG 5: Overly specific selectors */
+body div.container main#main-content div.products div.product {
+    border: 1px solid #ddd;
+    padding: 20px;
+    margin: 10px;
+}
+
+/* BUG 6: Missing fallback fonts */
+.product h3 {
+    font-family: 'CustomFont';
+}
+
+/* BUG 7: Hardcoded colors everywhere (no CSS variables) */
+.product {
+    background: #ffffff;
+    border: 1px solid #cccccc;
+}
+
+.product:hover {
+    background: #f8f8f8;
+    border-color: #999999;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* PERFORMANCE ISSUE 3: Layout thrashing */
+.animated-element {
+    animation: spin 2s infinite;
+    position: absolute;
+    left: calc(50% - 100px);
+    top: calc(50% - 100px);
+}
+
+/* BUG 8: Missing transitions cause jarring UX */
+button {
+    background: blue;
+}
+
+button:hover {
+    background: darkblue;
+}
+
+/* BUG 9: Conflicting styles */
+.cart-item {
+    display: inline-block;
+    width: 100%;
+}
+
+.cart-item {
+    display: block;
+    width: 50%;
+}
+
+/* ACCESSIBILITY ISSUE 1: Missing focus states */
+input {
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+/* ACCESSIBILITY ISSUE 2: Poor color contrast */
+.error-message {
+    color: #f0f0f0;
+    background: #ffffff;
+}
+
+/* BUG 10: Broken responsive design */
+@media (max-width: 600px) {
+    .container {
+        width: 1200px; /* Still fixed width! */
+    }
+}
+
+/* PERFORMANCE ISSUE 4: Multiple background images */
+.hero {
+    background-image: 
+        url('image1.jpg'),
+        url('image2.jpg'),
+        url('image3.jpg'),
+        url('image4.jpg');
+}
+
+/* BUG 11: Negative margins causing layout issues */
+.product-card {
+    margin: -10px -20px;
+}
+
+/* BUG 12: Float without clearfix */
+.float-container {
+    width: 100%;
+}
+
+.float-left {
+    float: left;
+    width: 50%;
+}
+
+.float-right {
+    float: right;
+    width: 50%;
+}
+
+/* BUG 13: Absolute positioning breaking layout */
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+}
+
+/* PERFORMANCE ISSUE 5: Expensive box shadows */
+.card {
+    box-shadow: 
+        0 0 10px rgba(0,0,0,0.1),
+        0 0 20px rgba(0,0,0,0.1),
+        0 0 30px rgba(0,0,0,0.1),
+        0 0 40px rgba(0,0,0,0.1);
+}
+
+/* BUG 14: Order dependency issues */
+.button-primary {
+    background: blue;
+}
+
+.button-danger {
+    background: red;
+}
+
+.button-primary.button-danger {
+    /* Unclear which one wins */
+}
+
+/* ACCESSIBILITY ISSUE 3: Text too small */
+.fine-print {
+    font-size: 8px;
+}
+
+/* BUG 15: Orphaned styles (classes not used anywhere) */
+.unused-class-1 {
+    color: red;
+}
+
+.unused-class-2 {
+    display: none;
+}
+
+.unused-class-3 {
+    position: absolute;
+}
+
+/* BUG 16: Magic numbers everywhere */
+.spacing-1 {
+    margin: 17px;
+    padding: 23px;
+}
+
+.spacing-2 {
+    margin: 19px;
+    padding: 31px;
+}
+
+/* PERFORMANCE ISSUE 6: Inefficient selectors */
+div > div > div > div > span {
+    color: red;
+}
+
+/* BUG 17: Conflicting positioning */
+.modal {
+    position: fixed;
+    position: absolute;
+}
+
+/* ACCESSIBILITY ISSUE 4: Hidden but not properly */
+.hidden {
+    display: none;
+    visibility: hidden;
+    opacity: 0;
+}
+
+/* BUG 18: Browser-specific hacks */
+.ie-only {
+    *display: inline;
+    _margin: 10px;
+}
+
+/* BUG 19: Percentage width issues */
+.column {
+    width: 33.3333%;
+    float: left;
+}
+
+.three-columns {
+    width: 99.9999%; /* Doesn't add up correctly */
+}
+
+/* PERFORMANCE ISSUE 7: Re-painting triggers */
+.hover-effect:hover {
+    width: calc(100% + 10px);
+    height: calc(100% + 10px);
+    margin-left: -5px;
+    margin-top: -5px;
+}

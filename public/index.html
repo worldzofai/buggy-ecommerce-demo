@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buggy E-Commerce Store</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Buggy E-Commerce Store</h1>
+            <div id="user-info"></div>
+        </header>
+
+        <nav>
+            <button onclick="showLogin()">Login</button>
+            <button onclick="showProducts()">Products</button>
+            <button onclick="showCart()">Cart (<span id="cart-count">0</span>)</button>
+        </nav>
+
+        <main id="main-content">
+            <!-- Content loaded dynamically -->
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
