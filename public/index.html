@@ -5,6 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buggy E-Commerce Store</title>
     <link rel="stylesheet" href="styles.css">
+    <script
+      src="https://js.sentry-cdn.com/YOUR_SENTRY_LOADER_SCRIPT_URL.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      // Alternative initialization if not using the loader script
+      // window.sentryOnLoad = function () {
+      //   Sentry.init({
+      //     dsn: "YOUR_SENTRY_DSN_HERE",
+      //     integrations: [
+      //       Sentry.browserTracingIntegration(),
+      //       Sentry.replayIntegration(),
+      //     ],
+      //     tracesSampleRate: 1.0,
+      //     replaysSessionSampleRate: 0.1,
+      //     replaysOnErrorSampleRate: 1.0,
+      //   });
+      // }
+    </script>
 </head>
 <body>
     <div class="container">

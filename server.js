@@ -1,6 +1,20 @@
+const Sentry = require("@sentry/node");
+const { nodeProfilingIntegration } = require("@sentry/profiling-node");
 const express = require('express');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
+
+// Initialize Sentry
+Sentry.init({
+  dsn: "YOUR_SENTRY_DSN_HERE", // REPLACE THIS WITH YOUR ACTUAL DSN
+  integrations: [
+    nodeProfilingIntegration(),
+  ],
+  // Tracing
+  tracesSampleRate: 1.0, //  Capture 100% of the transactions
+  // Set sampling rate for profiling - this is relative to tracesSampleRate
+  profilesSampleRate: 1.0,
+});
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
@@ -17,6 +31,11 @@ const db = mysql.createConnection({
   password: 'admin123',
   database: 'ecommerce_db'
 });
+
+// The request handler must be the first middleware on the app
+app.use(Sentry.Handlers.requestHandler());
+// TracingHandler creates a trace for every incoming request
+app.use(Sentry.Handlers.tracingHandler());
 
 app.use(bodyParser.json());
 app.use(express.static('public'));
@@ -257,6 +276,17 @@ app.get('/bad-async', async (req, res) => {
   }
   // Response sent even if error occurs
   res.json({ status: 'ok' });
+});
+
+// The error handler must be registered before any other error middleware and after all controllers
+app.use(Sentry.Handlers.errorHandler());
+
+// Optional fallthrough error handler
+app.use(function onError(err, req, res, next) {
+  // The error id is attached to `res.sentry` to be returned
+  // and optionally displayed to the user for support.
+  res.statusCode = 500;
+  res.end(res.sentry + "\n");
 });
 
 app.listen(PORT, () => {
