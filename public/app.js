@@ -349,6 +349,3 @@ window.onload = function() {
 // VULNERABILITY 10: Exposed API keys
 const API_KEY = 'sk_live_12345abcdef67890';
 const STRIPE_KEY = 'pk_test_abcdefghijklmnop';
-
-// BUG 26: Unhandled promise rejection
-fetch('/api/data').then(response => response.json());
