@@ -21,8 +21,15 @@ const db = mysql.createConnection({
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
-// BUG 1: No connection error handling
-db.connect();
+// Fixed: Add proper database connection error handling
+db.connect((err) => {
+  if (err) {
+    console.error('Failed to connect to database:', err.message);
+    console.error('Ensure MySQL is running and credentials are correct');
+    process.exit(1);
+  }
+  console.log('Successfully connected to database');
+});
 
 // Fixed: Use parameterized query to prevent SQL injection
 app.post('/login', async (req, res) => {
