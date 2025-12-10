@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 
 // Initialize Sentry
 Sentry.init({
-  dsn: "YOUR_SENTRY_DSN_HERE", // REPLACE THIS WITH YOUR ACTUAL DSN
+  dsn: "https://0584e1d26102dc5ea46fca9d4e801075@o4509573121310720.ingest.us.sentry.io/4510509444825088",
   integrations: [
     nodeProfilingIntegration(),
   ],

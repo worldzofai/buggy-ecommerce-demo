@@ -6,23 +6,21 @@
     <title>Buggy E-Commerce Store</title>
     <link rel="stylesheet" href="styles.css">
     <script
-      src="https://js.sentry-cdn.com/YOUR_SENTRY_LOADER_SCRIPT_URL.min.js"
+      src="https://browser.sentry-cdn.com/7.114.0/bundle.min.js"
+      integrity="sha384-h47iC3U4vE49+9Qz0+43D5555555555555555555555555555555555555555555"
       crossorigin="anonymous"
     ></script>
     <script>
-      // Alternative initialization if not using the loader script
-      // window.sentryOnLoad = function () {
-      //   Sentry.init({
-      //     dsn: "YOUR_SENTRY_DSN_HERE",
-      //     integrations: [
-      //       Sentry.browserTracingIntegration(),
-      //       Sentry.replayIntegration(),
-      //     ],
-      //     tracesSampleRate: 1.0,
-      //     replaysSessionSampleRate: 0.1,
-      //     replaysOnErrorSampleRate: 1.0,
-      //   });
-      // }
+      Sentry.init({
+        dsn: "https://0584e1d26102dc5ea46fca9d4e801075@o4509573121310720.ingest.us.sentry.io/4510509444825088",
+        integrations: [
+          new Sentry.BrowserTracing(),
+          new Sentry.Replay(),
+        ],
+        tracesSampleRate: 1.0,
+        replaysSessionSampleRate: 0.1,
+        replaysOnErrorSampleRate: 1.0,
+      });
     </script>
 </head>
 <body>
