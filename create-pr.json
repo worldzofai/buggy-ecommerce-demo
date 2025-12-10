@@ -1,0 +1,6 @@
+{
+  "title": "Fix memory leaks from intervals and localStorage",
+  "body": "## Changes\n\n- Added proper interval cleanup with `clearInterval()`\n- Created `stopAutoRefresh()` function to clean up intervals\n- Fixed localStorage not being cleared on logout\n\n## Testing\n\nTested logout flow and verified intervals are properly cleaned up.\n\n## Issues Still Remaining\n\n- Event listeners still not cleaned up (memory leak)\n- Multiple duplicate event listeners added on page load\n- API keys still exposed in code\n- Global variable pollution continues",
+  "head": "fix-memory-leaks",
+  "base": "main"
+}

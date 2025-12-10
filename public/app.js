@@ -364,3 +364,55 @@ const STRIPE_KEY = 'pk_test_abcdefghijklmnop';
 
 // BUG 26: Unhandled promise rejection
 fetch('/api/data').then(response => response.json());
+
+// VULNERABILITY 11: DOM Clobbering
+function showComments(comments) {
+    const container = document.getElementById('comments-container');
+    // If a comment contains <a id="defaultAvatar">, it can clobber window.defaultAvatar
+    comments.forEach(comment => {
+        container.innerHTML += `<div>${comment.text}</div>`;
+    });
+    
+    // Vulnerable code relying on global property
+    if (window.defaultAvatar) {
+        // If clobbered, this could execute malicious code if defaultAvatar is an anchor tag with javascript: href
+        console.log("Avatar source:", window.defaultAvatar.href);
+    }
+}
+
+// BUG 27: Infinite Loop in UI
+function animateSpinner() {
+    let angle = 0;
+    while(true) { // Freezes the browser
+        angle += 1;
+        // document.getElementById('spinner').style.transform = `rotate(${angle}deg)`;
+        if (angle > 360) angle = 0;
+        // Missing break or requestAnimationFrame
+        break; // Added break to prevent actual freeze during testing, but logic is flawed
+    }
+}
+
+// VULNERABILITY 12: Open Redirect
+function redirectUser() {
+    const params = new URLSearchParams(window.location.search);
+    const redirectUrl = params.get('url');
+    if (redirectUrl) {
+        // No validation of the URL
+        window.location.href = redirectUrl;
+    }
+}
+
+// BUG 28: Incorrect Object Comparison
+function isSameProduct(p1, p2) {
+    // Comparing objects by reference instead of value
+    return p1 === p2;
+}
+
+// BUG 29: Modifying array while iterating
+function removeOutofStock() {
+    for (let i = 0; i < products.length; i++) {
+        if (products[i].stock === 0) {
+            products.splice(i, 1); // Skips the next element!
+        }
+    }
+}

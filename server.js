@@ -275,3 +275,78 @@ app.post('/calculate', (req, res) => {
   
   res.json({ result });
 });
+
+// VULNERABILITY 14: Path Traversal
+app.get('/download-receipt', (req, res) => {
+  const file = req.query.file;
+  // No validation on file path - allows accessing system files like /etc/passwd or C:/Windows/win.ini
+  res.download(__dirname + '/receipts/' + file);
+});
+
+// VULNERABILITY 15: ReDoS (Regular Expression Denial of Service)
+app.post('/validate-email', (req, res) => {
+  const { email } = req.body;
+  // Evil regex that takes exponential time on crafted inputs
+  const regex = /^([a-zA-Z0-9])(([\-.]|[_]+)?([a-zA-Z0-9]+))*(@){1}[a-z0-9]+[.]{1}(([a-z]{2,3})|([a-z]{2,3}[.]{1}[a-z]{2,3}))$/;
+  if (regex.test(email)) {
+    res.json({ valid: true });
+  } else {
+    res.json({ valid: false });
+  }
+});
+
+// VULNERABILITY 16: Insecure Randomness & Token Leakage
+app.post('/reset-password', (req, res) => {
+  const { email } = req.body;
+  // Using Math.random for security-critical token (predictable)
+  const resetToken = Math.random().toString(36).substring(7);
+  
+  // VULNERABILITY: Leaking the token in the response
+  res.json({ message: 'Reset token generated', token: resetToken });
+});
+
+// VULNERABILITY 17: Prototype Pollution
+app.post('/update-settings', (req, res) => {
+  const { settings } = req.body;
+  const config = {};
+  
+  // Unsafe recursive merge allowing __proto__ modification
+  const merge = (target, source) => {
+    for (let key in source) {
+      if (typeof source[key] === 'object' && source[key] !== null) {
+        if (!target[key]) target[key] = {};
+        merge(target[key], source[key]);
+      } else {
+        target[key] = source[key];
+      }
+    }
+    return target;
+  };
+  
+  merge(config, settings);
+  res.json({ config });
+});
+
+// BUG 27: Uncaught Exception crashing server
+app.get('/crash', (req, res) => {
+    // This will crash the entire Node.js process
+    throw new Error("This will crash the server if not handled");
+});
+
+// VULNERABILITY 18: XML External Entity (XXE) Injection (Simulated)
+app.post('/parse-xml', (req, res) => {
+    const { xmlData } = req.body;
+    // Pretending to parse XML insecurely
+    // In a real scenario, using libxmljs.parseXml(xml, { noent: true }) would be vulnerable
+    console.log("Parsing XML with external entities enabled...");
+    res.send("XML Parsed (vulnerable to XXE)");
+});
+
+// BUG 28: Integer Overflow
+app.post('/add-points', (req, res) => {
+    let { currentPoints, pointsToAdd } = req.body;
+    // Javascript numbers are doubles, but if this interacts with a 32-bit int DB column...
+    // Or just logic error not checking MAX_SAFE_INTEGER
+    const newTotal = currentPoints + pointsToAdd;
+    res.json({ total: newTotal });
+});
