@@ -1,3 +1,4 @@
+const Sentry = require('@sentry/node');
 const express = require('express');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
@@ -6,6 +7,13 @@ const bcrypt = require('bcrypt');
 
 const app = express();
 const PORT = 3000;
+
+// Initialize Sentry for error monitoring
+Sentry.init({
+  dsn: process.env.SENTRY_DSN || '',
+  environment: process.env.NODE_ENV || 'development',
+  tracesSampleRate: 1.0,
+});
 
 // VULNERABILITY 1: Hardcoded secret key
 const SECRET_KEY = 'supersecret123';
@@ -17,6 +25,11 @@ const db = mysql.createConnection({
   password: 'admin123',
   database: 'ecommerce_db'
 });
+
+// Sentry request handler must be the first middleware
+app.use(Sentry.Handlers.requestHandler());
+// Sentry tracing handler for performance monitoring
+app.use(Sentry.Handlers.tracingHandler());
 
 app.use(bodyParser.json());
 app.use(express.static('public'));
@@ -261,6 +274,9 @@ app.get('/bad-async', async (req, res) => {
   // Response sent even if error occurs
   res.json({ status: 'ok' });
 });
+
+// Sentry error handler must be before any other error middleware and after all controllers
+app.use(Sentry.Handlers.errorHandler());
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
