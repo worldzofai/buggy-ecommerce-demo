@@ -3,9 +3,11 @@ const mysql = require('mysql');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const net = require('net');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
+const MAX_PORT_RETRIES = 5;
 
 // VULNERABILITY 1: Hardcoded secret key
 const SECRET_KEY = 'supersecret123';
@@ -262,9 +264,60 @@ app.get('/bad-async', async (req, res) => {
   res.json({ status: 'ok' });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// Function to check if port is available
+function isPortAvailable(port) {
+  return new Promise((resolve) => {
+    const tester = net.createServer()
+      .once('error', (err) => {
+        if (err.code === 'EADDRINUSE') {
+          resolve(false);
+        } else {
+          resolve(false);
+        }
+      })
+      .once('listening', () => {
+        tester.once('close', () => {
+          resolve(true);
+        }).close();
+      })
+      .listen(port);
+  });
+}
+
+// Function to find an available port
+async function findAvailablePort(startPort, maxRetries = MAX_PORT_RETRIES) {
+  for (let i = 0; i < maxRetries; i++) {
+    const port = startPort + i;
+    if (await isPortAvailable(port)) {
+      return port;
+    }
+  }
+  return null;
+}
+
+// Start server with port availability check
+(async () => {
+  try {
+    const availablePort = await findAvailablePort(PORT);
+    
+    if (!availablePort) {
+      console.error(`\x1b[31mError: Unable to find an available port between ${PORT} and ${PORT + MAX_PORT_RETRIES - 1}\x1b[0m`);
+      console.error('Please ensure no other process is using these ports or set a different PORT environment variable.');
+      process.exit(1);
+    }
+    
+    if (availablePort !== PORT) {
+      console.log(`\x1b[33mWarning: Port ${PORT} is in use, using port ${availablePort} instead\x1b[0m`);
+    }
+    
+    app.listen(availablePort, () => {
+      console.log(`\x1b[32mServer running on port ${availablePort}\x1b[0m`);
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error.message);
+    process.exit(1);
+  }
+})();
 
 // BUG 14: Unhandled promise rejection
 Promise.reject('Unhandled rejection');
