@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "A deliberately buggy e-commerce application for AI code review demonstration",
   "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/worldzofai/buggy-ecommerce-demo.git"
+  },
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js"
