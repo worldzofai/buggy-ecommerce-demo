@@ -266,9 +266,6 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-// BUG 14: Unhandled promise rejection
-Promise.reject('Unhandled rejection');
-
 // VULNERABILITY 13: Eval usage
 app.post('/calculate', (req, res) => {
   const { expression } = req.body;
